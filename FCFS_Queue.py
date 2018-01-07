@@ -11,9 +11,8 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 
 class Simulation:
 
-    def __init__(self,dist,serveTime,nServers,nEmployees,lunchTime):
+    def __init__(self,serveTime,nServers,nEmployees,lunchTime):
         self.startTime = time.time()
-        self.dist = dist.lower()
         self.serveTime = int(serveTime)
         self.nServers = int(nServers)
         self.nEmployees = int(nEmployees)
@@ -35,17 +34,13 @@ class Simulation:
             yield req
 
             # Get served
-            atServer = env.now
-            queueTime = (atServer - arriveTime)
+            queueTime = (env.now - arriveTime)
             self.data["Queue Time"].append(queueTime)
 
             yield env.timeout(serveTime)
 
     def distribute(self,mInterval,length):
-        if self.dist == 'poisson':
-            intervals = list(random.expovariate(1.0/mInterval) for i in range(length))
-        else:
-            raise Exception("SORRY, CANNOT HANDLE THAT DISTRIBUTION")
+        intervals = list(random.expovariate(1.0/mInterval) for i in range(length))
         self.data["Inter-Arrival"] = intervals
         return list(np.cumsum(intervals))
 
@@ -114,15 +109,20 @@ class Simulation:
         self.printRuntime()
 
 if __name__ == '__main__':
-    progStart = time.time()
-    serveTimes = [5,10,15,30,45]        #input("Enter serve times: ").split()
-    numServers = [1,2,3,5]              #input("Enter number of servers: ").split()
-    nEmployees = 1250                   #input("Enter number of employees: ")
-    lunchTimes = [1800,3600,7200]        #input("Enter time for lunch: ").split()
-    fileName = "Normal.xlsx"
+	
+    startTime = time.time()
+	
+	#Input Data
+    serveTimes = [5,10,15,30,45]
+    numServers = [1,2,3,5]      
+    nEmployees = 1250            
+    lunchTimes = [1800,3600,7200]
+	
+    fileName = "FCFS.xlsx"
     for sTime in serveTimes:
         for num in numServers:
             for lunchTime in lunchTimes:
-                s = Simulation("poisson",sTime,num,nEmployees,lunchTime)
+                s = Simulation(sTime,num,nEmployees,lunchTime)
                 s.run()
-    print("TOTAL RUNTIME: %.2f seconds" % (time.time() - progStart))
+				
+    print("TOTAL RUNTIME: %.2f seconds" % (time.time() - startTime))
