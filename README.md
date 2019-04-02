@@ -1,3 +1,3 @@
 # Queueing-Model
 
-Simulation of FCFS queue.
+Simulation of first-come, first-served queue.
