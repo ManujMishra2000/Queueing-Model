@@ -1,3 +1,3 @@
 # Queueing-Model
 
-Simulation of first-come, first-served queue.
+Simulation of a first-come, first-served queue.
